@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "dist",
+    "declarationMap": false,
+    "stripInternal": true,
+    "skipLibCheck": true,
+    "types": ["vite/client"]
+  },
+  "include": ["src"],
+  "exclude": ["src/router.tsx", "src/routes/**"]
+}

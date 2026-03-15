@@ -1,0 +1,93 @@
+{
+  "name": "formiq-sdk",
+  "private": false,
+  "type": "module",
+  "imports": {
+    "#/*": "./src/*"
+  },
+  "scripts": {
+    "dev": "vite dev --port 3000",
+    "build": "vite build",
+    "build:lib": "pnpm run build:types && vite build --mode lib",
+    "build:types": "tsc -p tsconfig.build.json",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "lint": "eslint",
+    "format": "prettier --check .",
+    "check": "prettier --write . && eslint --fix"
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.18",
+    "@tanstack/react-devtools": "latest",
+    "@tanstack/react-query": "^5.83.0",
+    "@tanstack/react-router": "latest",
+    "@tanstack/react-router-devtools": "latest",
+    "@tanstack/react-router-ssr-query": "latest",
+    "@tanstack/react-start": "latest",
+    "@tanstack/router-plugin": "^1.132.0",
+    "axios": "^1.13.6",
+    "konva": "^9.3.22",
+    "lodash": "^4.17.21",
+    "lucide-react": "^0.545.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-konva": "^19.0.3",
+    "sileo": "^0.1.5",
+    "tailwindcss": "^4.1.18",
+    "use-image": "^1.1.1",
+    "zustand": "^5.0.11"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "^5.0.0",
+    "axios": "^1.0.0",
+    "konva": "^9.0.0",
+    "lodash": "^4.17.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "react-konva": "^18.0.0 || ^19.0.0",
+    "use-image": "^1.0.0",
+    "zustand": "^4.0.0 || ^5.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.16",
+    "@tanstack/devtools-vite": "latest",
+    "@tanstack/eslint-config": "latest",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.0",
+    "@types/lodash": "^4.17.21",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.1.4",
+    "jsdom": "^28.1.0",
+    "prettier": "^3.8.1",
+    "typescript": "^5.7.2",
+    "vite": "^7.3.1",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.0.5"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "lightningcss"
+    ]
+  },
+  "version": "1.0.0"
+}
