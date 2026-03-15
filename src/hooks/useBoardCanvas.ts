@@ -1,7 +1,9 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type Konva from 'konva';
+import type { KonvaEventObject } from 'konva/lib/Node';
+import type { Stage } from 'konva/lib/Stage';
+import type { Vector2d } from 'konva/lib/types';
 
 import { useCanvasElement } from './useCanvasElement';
 import type { CanvasElementProperties, CanvasElementType } from '../stores/canvasStore';
@@ -15,13 +17,13 @@ export function useBoardCanvas(boardId: string, options?: UseBoardCanvasOptions)
   const canEdit = options?.canEdit ?? true;
   const { upsertCanvasElement } = useCanvasElement(boardId, { canEdit });
   const updateElement = useCanvasStore((state) => state.updateElement);
-  const stageRef = useRef<Konva.Stage | null>(null);
+  const stageRef = useRef<Stage | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [stageSize, setStageSize] = useState({ width: 800, height: 600 });
   const [stageScale, setStageScale] = useState(1);
   const [stagePosition, setStagePosition] = useState({ x: 0, y: 0 });
   const isPanning = useRef(false);
-  const panStartPoint = useRef<Konva.Vector2d | null>(null);
+  const panStartPoint = useRef<Vector2d | null>(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -37,7 +39,7 @@ export function useBoardCanvas(boardId: string, options?: UseBoardCanvasOptions)
   }, []);
 
   const handleWheel = useCallback(
-    (event: Konva.KonvaEventObject<WheelEvent>) => {
+    (event: KonvaEventObject<WheelEvent>) => {
       const stage = stageRef.current;
       if (!stage) return;
       event.evt.preventDefault();
@@ -63,7 +65,7 @@ export function useBoardCanvas(boardId: string, options?: UseBoardCanvasOptions)
     [stageScale, stagePosition]
   );
 
-  const handleMouseDown = useCallback((event: Konva.KonvaEventObject<MouseEvent>) => {
+  const handleMouseDown = useCallback((event: KonvaEventObject<MouseEvent>) => {
     if (event.target === event.target.getStage()) {
       isPanning.current = true;
       panStartPoint.current = stageRef.current?.getPointerPosition() ?? null;

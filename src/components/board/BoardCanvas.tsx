@@ -1,6 +1,6 @@
 'use client';
 
-import type * as Konva from 'konva';
+import type { KonvaEventObject } from 'konva/lib/Node';
 import { Layer, Label, Rect, Stage, Tag, Text, Transformer, Image as KonvaImage } from 'react-konva';
 import { useCallback, useMemo, useRef } from 'react';
 import useImage from 'use-image';
@@ -240,7 +240,7 @@ export function BoardCanvas({ boardId, board, canEdit = true }: BoardCanvasProps
   );
 
   const sampleCanvasColor = useCallback(
-    (event: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
+    (event: KonvaEventObject<MouseEvent | TouchEvent>) => {
       if (!colorEyedropperActive) {
         return false;
       }
@@ -327,7 +327,7 @@ export function BoardCanvas({ boardId, board, canEdit = true }: BoardCanvasProps
           if (colorEyedropperActive) return;
           handleSelect(element.id);
         },
-        onDragEnd: (event: Konva.KonvaEventObject<DragEvent>) => {
+        onDragEnd: (event: KonvaEventObject<DragEvent>) => {
           if (!canEdit || colorEyedropperActive) return;
 
           const nextPageRect = rectCanvasToPage(
@@ -356,7 +356,7 @@ export function BoardCanvas({ boardId, board, canEdit = true }: BoardCanvasProps
 
           handleDragEnd(element, nextPageRect.x, nextPageRect.y, normalizedProperties);
         },
-        onDragMove: (event: Konva.KonvaEventObject<DragEvent>) => {
+        onDragMove: (event: KonvaEventObject<DragEvent>) => {
           if (!canEdit || colorEyedropperActive) return;
 
           const nextPageRect = rectCanvasToPage(
@@ -380,7 +380,7 @@ export function BoardCanvas({ boardId, board, canEdit = true }: BoardCanvasProps
             },
           });
         },
-        onTransformEnd: (event: Konva.KonvaEventObject<Event>) => {
+        onTransformEnd: (event: KonvaEventObject<Event>) => {
           if (!canEdit || colorEyedropperActive) return;
 
           const node = event.target;
