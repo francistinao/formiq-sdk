@@ -21,6 +21,8 @@ yarn add @francistinao/formiq-sdk
 ## Usage
 
 ```tsx
+'use client'
+
 import { FormiqProvider, BoardEditor } from '@francistinao/formiq-sdk'
 import '@francistinao/formiq-sdk/styles.css'
 

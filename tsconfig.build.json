@@ -11,5 +11,12 @@
     "types": ["vite/client"]
   },
   "include": ["src"],
-  "exclude": ["src/router.tsx", "src/routes/**"]
+  "exclude": [
+    "src/router.tsx",
+    "src/routeTree.gen.ts",
+    "src/routes/**",
+    "src/components/Footer.tsx",
+    "src/components/Header.tsx",
+    "src/components/ThemeToggle.tsx"
+  ]
 }

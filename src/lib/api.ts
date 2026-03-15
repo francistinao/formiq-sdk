@@ -1,10 +1,9 @@
 import axios from 'axios';
 
 import { getPersonalAccessToken } from '../services/personalAccessToken.service';
-import { getApiBaseUrl } from './sdkConfig';
 
 export function createApi(getToken?: () => string | null) {
-  const baseURL = getApiBaseUrl() ?? 'http://localhost:3000/api/external';
+  const baseURL = "https://api.francistinao.com/api/v1";
   const api = axios.create({
     baseURL,
     headers: {

@@ -1,8 +1,7 @@
 'use client';
 
 import type { KonvaEventObject } from 'konva/lib/Node';
-import { Layer, Label, Rect, Stage, Tag, Text, Transformer, Image as KonvaImage } from 'react-konva';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import useImage from 'use-image';
 
 import { useBoardCanvas } from '../../hooks/useBoardCanvas';
@@ -19,7 +18,10 @@ import {
   rectPageToCanvas,
 } from '../../utils/canvas/pdfCoordinates';
 
+type KonvaImageComponent = (typeof import('react-konva'))['Image'];
+
 function CanvasImageElement({
+  KonvaImage,
   sharedProps,
   src,
   placeholder,
@@ -27,6 +29,7 @@ function CanvasImageElement({
   height,
   opacity,
 }: {
+  KonvaImage: KonvaImageComponent;
   sharedProps: object;
   src: string | undefined;
   placeholder: HTMLImageElement | undefined;
@@ -134,6 +137,23 @@ type BoardCanvasProps = {
 };
 
 export function BoardCanvas({ boardId, board, canEdit = true }: BoardCanvasProps) {
+  const [konva, setKonva] = useState<null | typeof import('react-konva')>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    setIsClient(true);
+    void import('react-konva').then((module) => {
+      if (!active) return;
+      setKonva(module);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const KonvaImage = konva?.Image;
+
   const {
     registerContainer,
     stageRef,
@@ -285,6 +305,10 @@ export function BoardCanvas({ boardId, board, canEdit = true }: BoardCanvasProps
 
   const renderElement = useCallback(
     (element: CanvasElement) => {
+      if (!KonvaImage) {
+        return null;
+      }
+
       const pageRect =
         element.properties.coordinateSpace === 'page'
           ? {
@@ -494,6 +518,7 @@ export function BoardCanvas({ boardId, board, canEdit = true }: BoardCanvasProps
       return (
         <CanvasImageElement
           key={element.id}
+          KonvaImage={KonvaImage}
           sharedProps={sharedProps}
           src={element.properties.src ?? element.src}
           placeholder={imagePlaceholderImage ?? undefined}
@@ -517,8 +542,15 @@ export function BoardCanvas({ boardId, board, canEdit = true }: BoardCanvasProps
       canEdit,
       dataSourceMeta,
       colorEyedropperActive,
+      KonvaImage,
     ]
   );
+
+  if (!isClient || !konva || !KonvaImage) {
+    return <div className="formiq-board-canvas formiq-board-canvas--loading" />;
+  }
+
+  const { Stage, Layer, Rect, Text, Label, Tag, Transformer } = konva;
 
   return (
     <div className="formiq-board-canvas">

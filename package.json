@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "vite dev --port 3000",
     "build": "vite build",
-    "build:lib": "pnpm run build:types && vite build --mode lib",
+    "build:lib": "vite build --mode lib && pnpm run build:types",
     "build:types": "tsc -p tsconfig.build.json",
     "preview": "vite preview",
     "test": "vitest run --passWithNoTests",
@@ -58,11 +58,9 @@
   "peerDependencies": {
     "@tanstack/react-query": "^5.0.0",
     "axios": "^1.0.0",
-    "konva": "^9.0.0",
     "lodash": "^4.17.0",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0",
-    "react-konva": "^18.0.0 || ^19.0.0",
     "use-image": "^1.0.0",
     "zustand": "^4.0.0 || ^5.0.0"
   },
@@ -90,5 +88,5 @@
       "lightningcss"
     ]
   },
-  "version": "1.0.3"
+  "version": "1.1.0"
 }

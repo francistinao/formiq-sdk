@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useRef } from 'react';
 
 import { setPersonalAccessToken } from '../services/personalAccessToken.service';
 import { setApiBaseUrl } from '../lib/sdkConfig';
@@ -12,18 +13,20 @@ type FormiqProviderProps = {
 };
 
 export function FormiqProvider({ token, apiBaseUrl, children }: FormiqProviderProps) {
-  const stableToken = useMemo(() => token.trim(), [token]);
-  const stableApiBaseUrl = useMemo(() => apiBaseUrl?.trim() ?? '', [apiBaseUrl]);
+  const queryClientRef = useRef<QueryClient>(null);
+  if (!queryClientRef.current) {
+    queryClientRef.current = new QueryClient();
+  }
 
-  useEffect(() => {
-    if (!stableToken) return;
-    setPersonalAccessToken(stableToken);
-  }, [stableToken]);
+  const trimmedToken = token.trim();
+  const trimmedApiBaseUrl = apiBaseUrl?.trim() ?? '';
 
-  useEffect(() => {
-    if (!stableApiBaseUrl) return;
-    setApiBaseUrl(stableApiBaseUrl);
-  }, [stableApiBaseUrl]);
+  if (trimmedToken) setPersonalAccessToken(trimmedToken);
+  if (trimmedApiBaseUrl) setApiBaseUrl(trimmedApiBaseUrl);
 
-  return <>{children}</>;
+  return (
+    <QueryClientProvider client={queryClientRef.current}>
+      {children}
+    </QueryClientProvider>
+  );
 }

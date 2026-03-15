@@ -27,8 +27,6 @@ const libConfig = defineConfig({
         '@tanstack/react-query',
         'axios',
         'zustand',
-        'konva',
-        'react-konva',
         'use-image',
         'lodash',
       ],

@@ -3,6 +3,10 @@
 import './styles.css';
 
 export { BoardEditor } from './components/board/BoardEditor';
+export { BoardCanvas } from './components/board/BoardCanvas';
+export { BoardSidebar } from './components/board/BoardSidebar';
+export { BoardPropertiesPanel } from './components/board/BoardPropertiesPanel';
+export { BoardWorkspaceLayout } from './components/board/BoardWorkspaceLayout';
 export { FormiqProvider } from './provider/FormiqProvider';
 
 export { useBoardEditor } from './hooks/useBoardEditor';

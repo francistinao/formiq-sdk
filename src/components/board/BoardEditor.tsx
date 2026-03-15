@@ -6,6 +6,7 @@ import { useBoardEditor } from '../../hooks/useBoardEditor';
 import { useCanvasElement } from '../../hooks/useCanvasElement';
 import { useProduce } from '../../hooks/useProduce';
 import { BoardCanvas } from './BoardCanvas';
+import { BoardWorkspaceLayout } from './BoardWorkspaceLayout';
 import { useCanvasStore } from '../../stores/canvasStore';
 import { mapCanvasElement } from '../../utils/canvas/mapCanvasElement';
 import { getPersonalAccessToken } from '../../services/personalAccessToken.service';
@@ -22,7 +23,6 @@ type DataSourceMeta = {
 
 function buildDataSourceMeta(dataSource: DataSourceMeta) {
   if (!dataSource) return null;
-
   const columnHeaders = Array.isArray(dataSource.columnHeaders) ? dataSource.columnHeaders : [];
   const previewRow =
     Array.isArray(dataSource.parsedData) && dataSource.parsedData.length
@@ -51,9 +51,7 @@ export function BoardEditor({ boardId, canEdit = true }: BoardEditorProps) {
   const produce = useProduce(boardId);
 
   const boardName = useMemo(() => {
-    if (!boardQuery.data) {
-      return 'Board';
-    }
+    if (!boardQuery.data) return 'Board';
     return boardQuery.data.board.boardName;
   }, [boardQuery.data]);
 
@@ -64,7 +62,6 @@ export function BoardEditor({ boardId, canEdit = true }: BoardEditorProps) {
       setAssetUrl(null);
       return;
     }
-
     const { board } = boardQuery.data;
     setDataSourceMeta(buildDataSourceMeta(board.dataSource));
     setAssetUrl(board.asset?.fileUrl ?? null);
@@ -72,13 +69,11 @@ export function BoardEditor({ boardId, canEdit = true }: BoardEditorProps) {
 
   useEffect(() => {
     if (!canvasElements) return;
-
     if (!initialLoadDone.current) {
       setElements(canvasElements.map(mapCanvasElement));
       initialLoadDone.current = true;
       return;
     }
-
     mergeElements(canvasElements.map(mapCanvasElement));
   }, [canvasElements, setElements, mergeElements]);
 
@@ -87,12 +82,12 @@ export function BoardEditor({ boardId, canEdit = true }: BoardEditorProps) {
       window.open(produce.downloadUrl, '_blank', 'noopener,noreferrer');
       return;
     }
-
     await produce.triggerGeneration();
   }
 
   return (
     <div className="formiq-board">
+      {/* Header */}
       <div className="formiq-board__header">
         <div className="formiq-board__title">{boardName}</div>
         <div className="formiq-board__actions">
@@ -115,6 +110,8 @@ export function BoardEditor({ boardId, canEdit = true }: BoardEditorProps) {
           )}
         </div>
       </div>
+
+      {/* Error / empty states */}
       {boardQuery.isError && (
         <div className="formiq-board__error">
           Failed to load board. Check your PAT and board id.
@@ -122,13 +119,16 @@ export function BoardEditor({ boardId, canEdit = true }: BoardEditorProps) {
       )}
       {!token && (
         <div className="formiq-board__empty">
-          No PAT provided. Wrap this component with <code>{'<FormiqProvider token="...">'}</code>.
+          No PAT provided. Wrap this component with{' '}
+          <code>{'<FormiqProvider token="...">'}</code>.
         </div>
       )}
+
+      {/* 3-panel workspace */}
       {token && (
-        <div className="formiq-board__canvas">
+        <BoardWorkspaceLayout boardId={boardId} canEdit={canEdit}>
           <BoardCanvas boardId={boardId} board={boardQuery.data?.board} canEdit={canEdit} />
-        </div>
+        </BoardWorkspaceLayout>
       )}
     </div>
   );
