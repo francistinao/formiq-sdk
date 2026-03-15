@@ -1,5 +1,5 @@
 {
-  "name": "@formiq/formiq-sdk",
+  "name": "@francistinao/formiq-sdk",
   "private": false,
   "type": "module",
   "imports": {
