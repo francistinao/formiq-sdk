@@ -1,6 +1,6 @@
 'use client';
 
-import Konva from 'konva';
+import type * as Konva from 'konva';
 import { Layer, Label, Rect, Stage, Tag, Text, Transformer, Image as KonvaImage } from 'react-konva';
 import { useCallback, useMemo, useRef } from 'react';
 import useImage from 'use-image';
@@ -247,7 +247,7 @@ export function BoardCanvas({ boardId, board, canEdit = true }: BoardCanvasProps
 
       const stage = stageRef.current;
       const pointer = stage?.getPointerPosition();
-      const layer = stage?.getLayers?.()[0];
+      const layer = stage?.getLayers()[0];
       const canvas = layer?.getNativeCanvasElement();
       const context = canvas?.getContext('2d');
 
@@ -383,7 +383,7 @@ export function BoardCanvas({ boardId, board, canEdit = true }: BoardCanvasProps
         onTransformEnd: (event: Konva.KonvaEventObject<Event>) => {
           if (!canEdit || colorEyedropperActive) return;
 
-          const node = event.target as Konva.Shape;
+          const node = event.target;
           const transformedCanvasRect = {
             x: node.x(),
             y: node.y(),
@@ -436,7 +436,7 @@ export function BoardCanvas({ boardId, board, canEdit = true }: BoardCanvasProps
             image={imagePlaceholderImage ?? undefined}
             width={canvasRect.width}
             height={canvasRect.height}
-            opacity={element.properties.opacity as number}
+            opacity={element.properties.opacity}
           />
         );
       }
@@ -491,28 +491,14 @@ export function BoardCanvas({ boardId, board, canEdit = true }: BoardCanvasProps
         );
       }
 
-      if (element.type === 'image') {
-        return (
-          <CanvasImageElement
-            key={element.id}
-            sharedProps={sharedProps}
-            src={element.properties.src ?? element.src}
-            placeholder={imagePlaceholderImage ?? undefined}
-            width={canvasRect.width}
-            height={canvasRect.height}
-            opacity={element.properties.opacity}
-          />
-        );
-      }
-
       return (
-        <Rect
+        <CanvasImageElement
           key={element.id}
-          {...sharedProps}
-          fill="#ffffff"
-          stroke="#1c417c"
-          strokeWidth={2}
-          dash={element.type === 'bar_code' ? [10, 6] : undefined}
+          sharedProps={sharedProps}
+          src={element.properties.src ?? element.src}
+          placeholder={imagePlaceholderImage ?? undefined}
+          width={canvasRect.width}
+          height={canvasRect.height}
           opacity={element.properties.opacity}
         />
       );
@@ -617,10 +603,10 @@ export function BoardCanvas({ boardId, board, canEdit = true }: BoardCanvasProps
               .slice()
               .sort((a, b) => a.zIndex - b.zIndex)
               .map((element) => renderElement(element))}
-            {selectedElement && (
+            {selectedElement && selectedElementCanvasRect && (
               <Label
-                x={Math.max(selectedElementCanvasRect?.x ?? 0, 0)}
-                y={Math.max((selectedElementCanvasRect?.y ?? 0) - 28, 0)}
+                x={Math.max(selectedElementCanvasRect.x, 0)}
+                y={Math.max(selectedElementCanvasRect.y - 28, 0)}
                 listening={false}
               >
                 <Tag fill="#2563eb" cornerRadius={4} />
@@ -630,12 +616,10 @@ export function BoardCanvas({ boardId, board, canEdit = true }: BoardCanvasProps
             {canEdit && selectedId && (
               <Transformer
                 ref={(node) => {
-                  const transformer = node as Konva.Transformer;
-                  if (transformer) {
-                    const stage = transformer.getStage();
-                    const selectedNode = stage?.findOne(`#${selectedId}`);
-                    transformer.nodes(selectedNode ? [selectedNode] : []);
-                  }
+                  if (!node) return;
+                  const stage = node.getStage();
+                  const selectedNode = stage?.findOne(`#${selectedId}`);
+                  node.nodes(selectedNode ? [selectedNode] : []);
                 }}
                 boundBoxFunc={(_oldBox, newBox) => ({
                   ...newBox,

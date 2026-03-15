@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { fetchProduceStatus, triggerProduce } from '../services/integration.service';
@@ -25,7 +25,10 @@ function isActiveStatus(status: GenerationJobStatus | null) {
 }
 
 function extractErrorMessage(error: AxiosError<ProduceApiError>) {
-  return error.response?.data?.error ?? error.message ?? 'Failed to process PDF generation';
+  const responseError = error.response?.data.error;
+  return responseError && responseError.length > 0
+    ? responseError
+    : error.message || 'Failed to process PDF generation';
 }
 
 export function useProduce(boardId?: string) {
@@ -135,15 +138,29 @@ export function useProduce(boardId?: string) {
 
   const currentStatus = statusQuery.data?.status ?? triggerMutation.data?.status ?? null;
 
-  const missingPrerequisites =
-    triggerMutation.error?.response?.status === 422
-      ? (triggerMutation.error.response.data?.missing ?? [])
-      : [];
+  const missingPrerequisites: MissingProducePrerequisite[] = (() => {
+    const mutationError = triggerMutation.error;
+    if (!mutationError) {
+      return [];
+    }
+    const status = mutationError.response?.status;
+    if (status !== 422) {
+      return [];
+    }
+    return mutationError.response?.data.missing ?? [];
+  })();
 
-  const conflictJobId =
-    triggerMutation.error?.response?.status === 409
-      ? (triggerMutation.error.response.data?.jobId ?? null)
-      : null;
+  const conflictJobId = (() => {
+    const mutationError = triggerMutation.error;
+    if (!mutationError) {
+      return null;
+    }
+    const status = mutationError.response?.status;
+    if (status !== 409) {
+      return null;
+    }
+    return mutationError.response?.data.jobId ?? null;
+  })();
 
   const derivedErrorMessage = useMemo(() => {
     if (statusQuery.error) {
@@ -155,7 +172,7 @@ export function useProduce(boardId?: string) {
     }
 
     return statusQuery.data?.errorMessage ?? null;
-  }, [statusQuery.error, statusQuery.data?.errorMessage, triggerMutation.error]);
+  }, [statusQuery.error, statusQuery.data, triggerMutation.error]);
 
   const isGenerating = isActiveStatus(currentStatus);
 
@@ -181,7 +198,7 @@ export function useProduce(boardId?: string) {
     isPolling: statusQuery.isFetching,
     downloadUrl: statusQuery.data?.downloadUrl,
     errorMessage: derivedErrorMessage,
-    missingPrerequisites: missingPrerequisites as MissingProducePrerequisite[],
+    missingPrerequisites,
     conflictJobId,
     triggerGeneration: triggerMutation.mutateAsync,
     refetchStatus: statusQuery.refetch,

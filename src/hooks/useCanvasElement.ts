@@ -1,9 +1,10 @@
 'use client';
 
 import { useCallback, useEffect, useRef } from 'react';
-import { debounce, type DebouncedFunc } from 'lodash';
+import { debounce } from 'lodash';
+import type { DebouncedFunc } from 'lodash';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
 
 import type { CanvasElement, CanvasElementUpsert } from '../types/canvas.types';
 import {
@@ -55,7 +56,7 @@ export function useCanvasElement(boardId: string, options?: UseCanvasElementOpti
     },
     enabled: Boolean(boardId) && enabled,
     retry: (failureCount, error) => {
-      const status = (error as AxiosError<{ error?: string }>)?.response?.status;
+      const status = (error as AxiosError<{ error?: string }>).response?.status;
 
       if (status === 401 || status === 403 || status === 404) {
         return false;
@@ -70,7 +71,7 @@ export function useCanvasElement(boardId: string, options?: UseCanvasElementOpti
   const { mutate } = useMutation({
     mutationFn: upsertCanvasElementRequest,
     onSuccess: (canvasElement) => {
-      if (!canvasElement?.id) return;
+      if (!canvasElement.id) return;
       queryClient.setQueryData(['canvas-elements', boardId], (oldData: CanvasElement[] = []) => {
         const exists = oldData.some((el) => el.id === canvasElement.id);
         if (exists) {
@@ -109,7 +110,7 @@ export function useCanvasElement(boardId: string, options?: UseCanvasElementOpti
     (
       element: CanvasElementUpsert,
       onCreated?: (dbId: number, configDbId: number) => void,
-      options?: UpsertOptions
+      upsertOptions?: UpsertOptions
     ) => {
       if (!canEdit) {
         return;
@@ -124,7 +125,7 @@ export function useCanvasElement(boardId: string, options?: UseCanvasElementOpti
         debouncersRef.current.set(key, debouncer);
       }
 
-      if (options?.immediate) {
+      if (upsertOptions?.immediate) {
         debouncer.cancel();
         flushUpsert(key);
         return;

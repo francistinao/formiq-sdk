@@ -50,7 +50,12 @@ export function BoardEditor({ boardId, canEdit = true }: BoardEditorProps) {
   const { canvasElements } = useCanvasElement(boardId, { enabled: Boolean(ready && token) });
   const produce = useProduce(boardId);
 
-  const boardName = useMemo(() => boardQuery.data?.board?.boardName ?? 'Board', [boardQuery.data]);
+  const boardName = useMemo(() => {
+    if (!boardQuery.data) {
+      return 'Board';
+    }
+    return boardQuery.data.board.boardName;
+  }, [boardQuery.data]);
 
   useEffect(() => {
     if (!boardQuery.data?.board) {

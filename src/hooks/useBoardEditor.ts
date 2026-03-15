@@ -1,6 +1,6 @@
 'use client';
 
-import { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { fetchBoard, toggleGenerateLink } from '../services/integration.service';
@@ -47,7 +47,7 @@ export function useBoardEditor(boardId?: string, options?: { enabled?: boolean }
     },
     enabled: Boolean(boardId) && enabled,
     retry: (failureCount, error) => {
-      const status = (error as AxiosError<{ error?: string }>)?.response?.status;
+      const status = (error as AxiosError<{ error?: string }>).response?.status;
 
       if (status === 401 || status === 403) {
         return false;
@@ -60,7 +60,7 @@ export function useBoardEditor(boardId?: string, options?: { enabled?: boolean }
       return failureCount < 2;
     },
     retryDelay: (attempt, error) => {
-      const status = (error as AxiosError<{ error?: string }>)?.response?.status;
+      const status = (error as AxiosError<{ error?: string }>).response?.status;
       if (status === 404) {
         return Math.min(300 * 2 ** attempt, 2_000);
       }
