@@ -28,10 +28,7 @@ import '@francistinao/formiq-sdk/styles.css'
 
 function App() {
   return (
-    <FormiqProvider
-      token="formiq_3dc..."
-      apiBaseUrl="https://api.francistinao.com/api/v1"
-    >
+    <FormiqProvider token="formiq_3dc...">
       <BoardEditor boardId="YOUR_BOARD_ID" />
     </FormiqProvider>
   )
