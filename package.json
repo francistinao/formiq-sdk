@@ -11,7 +11,7 @@
     "build:lib": "pnpm run build:types && vite build --mode lib",
     "build:types": "tsc -p tsconfig.build.json",
     "preview": "vite preview",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "lint": "eslint",
     "format": "prettier --check .",
     "check": "prettier --write . && eslint --fix"
