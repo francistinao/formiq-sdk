@@ -10,10 +10,14 @@ const libConfig = defineConfig({
   plugins: [tsconfigPaths({ projects: ['./tsconfig.json'] }), tailwindcss(), viteReact()],
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/index.ts'),
+      entry: {
+        index: path.resolve(__dirname, 'src/index.ts'),
+        'react-server': path.resolve(__dirname, 'src/react-server.ts'),
+      },
       name: 'FormiqSDK',
       formats: ['es', 'cjs'],
-      fileName: (format) => (format === 'cjs' ? 'index.cjs' : 'index.js'),
+      fileName: (format, entryName) =>
+        format === 'cjs' ? `${entryName}.cjs` : `${entryName}.js`,
     },
     cssCodeSplit: false,
     rollupOptions: {

@@ -22,10 +22,11 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "react-server": "./dist/react-server.js",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
-    "./styles.css": "./dist/styles.css"
+    "./styles.css": "./dist/formiq-sdk.css"
   },
   "files": [
     "dist"
