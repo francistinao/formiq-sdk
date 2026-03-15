@@ -11,22 +11,25 @@ Embed Formiq board components (e.g. `/b/[boardId]`) inside existing React applic
 ## Install
 
 ```bash
-pnpm add @formiq/formiq-sdk
+pnpm add @francistinao/formiq-sdk
 # or
-npm install @formiq/formiq-sdk
+npm install @francistinao/formiq-sdk
 # or
-yarn add @formiq/formiq-sdk
+yarn add @francistinao/formiq-sdk
 ```
 
 ## Usage
 
 ```tsx
-import { FormiqProvider, BoardEditor } from '@formiq/formiq-sdk'
-import '@formiq/formiq-sdk/styles.css'
+import { FormiqProvider, BoardEditor } from '@francistinao/formiq-sdk'
+import '@francistinao/formiq-sdk/styles.css'
 
 function App() {
   return (
-    <FormiqProvider token="formiq_3dc...">
+    <FormiqProvider
+      token="formiq_3dc..."
+      apiBaseUrl="https://api.francistinao.com/api/v1"
+    >
       <BoardEditor boardId="YOUR_BOARD_ID" />
     </FormiqProvider>
   )
@@ -37,3 +40,8 @@ function App() {
 
 - The PAT is required to load board data and generate PDFs.
 - Wrap your editor components with `FormiqProvider` so API requests include the PAT automatically.
+- Set `apiBaseUrl` on `FormiqProvider` (or call `setApiBaseUrl`) to target your API host.
+
+---
+
+By Francis Tin-ao

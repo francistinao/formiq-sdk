@@ -29,6 +29,7 @@ const libConfig = defineConfig({
         'lodash',
       ],
       output: {
+        banner: '"use client";',
         globals: {
           react: 'React',
           'react-dom': 'ReactDOM',

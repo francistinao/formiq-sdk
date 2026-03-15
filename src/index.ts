@@ -1,3 +1,5 @@
+'use client';
+
 import './styles.css';
 
 export { BoardEditor } from './components/board/BoardEditor';
@@ -10,6 +12,8 @@ export { useBoardCanvas } from './hooks/useBoardCanvas';
 export { useValidatePat } from './hooks/useValidatePat';
 
 export { useCanvasStore } from './stores/canvasStore';
+
+export { setApiBaseUrl, getApiBaseUrl } from './lib/sdkConfig';
 
 export {
   getPersonalAccessToken,
